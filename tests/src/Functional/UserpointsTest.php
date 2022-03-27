@@ -16,13 +16,6 @@ class UserpointsTest extends BrowserTestBase {
   protected $defaultTheme = 'stable';
 
   /**
-   * Test users.
-   *
-   * @var AccountInterface[]
-   */
-  private $users;
-
-  /**
    * Modules to install.
    *
    * @var array
@@ -75,6 +68,7 @@ class UserpointsTest extends BrowserTestBase {
     $manager_user = $this->drupalCreateUser(['manage default points']);
     $this->drupalLogin($manager_user);
     $this->drupalGet('user/' . $standard_user->id() . '/userpoints');
+    $assertSession->statusCodeEquals(200);
     $assertSession->elementExists('css', 'input[name="quantity"]');
     $assertSession->elementExists('css', 'input[name="log"]');
     $assertSession->elementExists('css', 'input[type="submit"]');
