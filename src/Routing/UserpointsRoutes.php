@@ -73,7 +73,7 @@ class UserpointsRoutes implements ContainerInjectionInterface {
     foreach ($bundle_info as $entity_type_id => $bundles) {
       $links = $this->entityTypeManager->getDefinition($entity_type_id)->get('links');
       if (isset($links['canonical'])) {
-        $classname = '\Userpoints' . lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $entity_type_id)))) . 'TabForm';
+        $classname = '\Userpoints' . str_replace(' ', '', ucwords(str_replace('-', ' ', $entity_type_id))) . 'TabForm';
         $routes['entity.' . $entity_type_id . '.userpoints'] = new Route(
           $links['canonical'] . '/userpoints',
           [
