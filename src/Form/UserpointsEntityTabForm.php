@@ -126,7 +126,8 @@ abstract class UserpointsEntityTabForm extends FormBase {
         }
       }
 
-      // Type option is added when user has at least one of edit and view access.
+      // Type option is added when user has at least one of edit and
+      // view access.
       if ($output['edit_access'][$bundle_name] || $output['view_access'][$bundle_name]) {
         $output['type_options'][$bundle_name] = $bundle_info['label'];
       }
@@ -225,7 +226,7 @@ abstract class UserpointsEntityTabForm extends FormBase {
             'created' => $this->t('Created'),
           ],
           '#rows' => [],
-          '#empty' => $this->t('There are no points operations for this entity yet.')
+          '#empty' => $this->t('There are no points operations for this entity yet.'),
         ];
         $log = $this->userpointsService->getLog($entity, $selected_type);
         foreach (array_reverse($log) as $vid => $item) {

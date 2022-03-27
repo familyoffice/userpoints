@@ -119,84 +119,85 @@ class UserPointsController extends ControllerBase implements ContainerInjectionI
     foreach (array_reverse($vids) as $vid) {
       /** @var \Drupal\userpoints\UserPointsInterface $revision */
       $revision = $userpoints_storage->loadRevision($vid);
-        $username = [
-          '#theme' => 'username',
-          '#account' => $revision->getRevisionUser(),
-        ];
 
-        // Use revision link to link to revisions that are not active.
-        $date = $this->dateFormatter->format($revision->getRevisionCreationTime(), 'short');
-        if ($vid != $userpoints->getRevisionId()) {
-          $link = $this->l($date, new Url('entity.userpoints.revision', [
-            'userpoints' => $userpoints->id(),
-            'userpoints_revision' => $vid,
-          ]));
-        }
-        else {
-          $link = $userpoints->link($date);
-        }
+      $username = [
+        '#theme' => 'username',
+        '#account' => $revision->getRevisionUser(),
+      ];
 
-        $row = [];
-        $column = [
-          'data' => [
-            '#type' => 'inline_template',
-            '#template' => '{% trans %}{{ date }} by {{ username }}{% endtrans %}{% if message %}<p class="revision-log">{{ message }}</p>{% endif %}',
-            '#context' => [
-              'date' => $link,
-              'username' => $this->renderer->renderPlain($username),
-              'message' => [
-                '#markup' => $revision->getRevisionLogMessage(),
-                '#allowed_tags' => Xss::getHtmlTagList(),
-              ],
+      // Use revision link to link to revisions that are not active.
+      $date = $this->dateFormatter->format($revision->getRevisionCreationTime(), 'short');
+      if ($vid != $userpoints->getRevisionId()) {
+        $link = $this->l($date, new Url('entity.userpoints.revision', [
+          'userpoints' => $userpoints->id(),
+          'userpoints_revision' => $vid,
+        ]));
+      }
+      else {
+        $link = $userpoints->link($date);
+      }
+
+      $row = [];
+      $column = [
+        'data' => [
+          '#type' => 'inline_template',
+          '#template' => '{% trans %}{{ date }} by {{ username }}{% endtrans %}{% if message %}<p class="revision-log">{{ message }}</p>{% endif %}',
+          '#context' => [
+            'date' => $link,
+            'username' => $this->renderer->renderPlain($username),
+            'message' => [
+              '#markup' => $revision->getRevisionLogMessage(),
+              '#allowed_tags' => Xss::getHtmlTagList(),
             ],
           ],
+        ],
+      ];
+      $row[] = $column;
+
+      if ($latest_revision) {
+        $row[] = [
+          'data' => [
+            '#prefix' => '<em>',
+            '#markup' => $this->t('Current revision'),
+            '#suffix' => '</em>',
+          ],
         ];
-        $row[] = $column;
-
-        if ($latest_revision) {
-          $row[] = [
-            'data' => [
-              '#prefix' => '<em>',
-              '#markup' => $this->t('Current revision'),
-              '#suffix' => '</em>',
-            ],
-          ];
-          foreach ($row as &$current) {
-            $current['class'] = ['revision-current'];
-          }
-          $latest_revision = FALSE;
+        foreach ($row as &$current) {
+          $current['class'] = ['revision-current'];
         }
-        else {
-          $links = [];
-          if ($revert_permission) {
-            $links['revert'] = [
-              'title' => $this->t('Revert'),
-              'url' => Url::fromRoute('entity.userpoints.revision_revert', [
-                'userpoints' => $userpoints->id(),
-                'userpoints_revision' => $vid,
-              ]),
-            ];
-          }
-
-          if ($delete_permission) {
-            $links['delete'] = [
-              'title' => $this->t('Delete'),
-              'url' => Url::fromRoute('entity.userpoints.revision_delete', [
-                'userpoints' => $userpoints->id(),
-                'userpoints_revision' => $vid,
-              ]),
-            ];
-          }
-
-          $row[] = [
-            'data' => [
-              '#type' => 'operations',
-              '#links' => $links,
-            ],
+        $latest_revision = FALSE;
+      }
+      else {
+        $links = [];
+        if ($revert_permission) {
+          $links['revert'] = [
+            'title' => $this->t('Revert'),
+            'url' => Url::fromRoute('entity.userpoints.revision_revert', [
+              'userpoints' => $userpoints->id(),
+              'userpoints_revision' => $vid,
+            ]),
           ];
         }
 
-        $rows[] = $row;
+        if ($delete_permission) {
+          $links['delete'] = [
+            'title' => $this->t('Delete'),
+            'url' => Url::fromRoute('entity.userpoints.revision_delete', [
+              'userpoints' => $userpoints->id(),
+              'userpoints_revision' => $vid,
+            ]),
+          ];
+        }
+
+        $row[] = [
+          'data' => [
+            '#type' => 'operations',
+            '#links' => $links,
+          ],
+        ];
+      }
+
+      $rows[] = $row;
     }
 
     $build['userpoints_revisions_table'] = [

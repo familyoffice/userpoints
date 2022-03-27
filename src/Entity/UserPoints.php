@@ -9,7 +9,6 @@ use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\RevisionLogEntityTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\user\UserInterface;
 
 /**
  * Defines the User points entity.
