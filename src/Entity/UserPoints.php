@@ -49,6 +49,11 @@ use Drupal\user\UserInterface;
  *     "uuid" = "uuid",
  *     "langcode" = "langcode",
  *   },
+ *   revision_metadata_keys = {
+ *     "revision_user" = "revision_uid",
+ *     "revision_created" = "revision_timestamp",
+ *     "revision_log_message" = "revision_log"
+ *   },
  *   links = {
  *     "canonical" = "/admin/structure/userpoints/points/{userpoints}",
  *     "add-page" = "/admin/structure/userpoints/points/add",
@@ -107,7 +112,7 @@ class UserPoints extends ContentEntityBase implements UserPointsInterface {
     if (!isset($values['quantity'])) {
       $type = \Drupal::service('entity_type.manager')->getStorage('userpoints_type')->load($values['type']);
       if ($type) {
-        $values['quantity'] = $type->initial_value;
+        $values['quantity'] = $type->get('initial_value');
       }
     }
   }

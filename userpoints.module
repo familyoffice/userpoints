@@ -10,12 +10,12 @@ use Drupal\Core\Routing\RouteMatchInterface;
 /**
  * Implements hook_help().
  */
-function userpoints_help($route_name, RouteMatchInterface $route_match) {
+function userpoints_help($route_name, RouteMatchInterface $route_match): ?string {
   switch ($route_name) {
-    // Main module help for the userpoints module.
+    // Help for the userpoints module.
     case 'help.page.userpoints':
       $output = '';
-      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= nl2br(file_get_contents(__DIR__ . '/README.md'));
       return $output;
 
     default:

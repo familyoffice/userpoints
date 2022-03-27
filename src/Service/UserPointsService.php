@@ -81,6 +81,7 @@ class UserPointsService implements UserPointsServiceInterface {
     }
 
     $query = $this->userPointsStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', $points_type)
       ->condition('entity_type_id', $entity->getEntityTypeId(), '=')
       ->condition('entity_id', $entity->id(), '=');

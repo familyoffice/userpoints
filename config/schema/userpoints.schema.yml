@@ -3,4 +3,9 @@ userpoints.settings:
   mapping:
     userpoints_ui_bundles:
       type: sequence
-      label: 'Entity bundles that have userpoints UI tab enabled'
+      label: 'Entity types that have userpoints UI tab enabled'
+      sequence:
+        type: sequence
+        label: 'Entity type bundles that have userpoints UI tab enabled'
+        sequence:
+          type: boolean

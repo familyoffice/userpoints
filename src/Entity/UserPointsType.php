@@ -36,7 +36,12 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *     "edit-form" = "/admin/structure/userpoints/types/{userpoints_type}/edit",
  *     "delete-form" = "/admin/structure/userpoints/types/{userpoints_type}/delete",
  *     "collection" = "/admin/structure/userpoints/types"
- *   }
+ *   },
+ *   config_export = {
+ *     "id",
+ *     "label",
+ *     "initial_value",
+ *   },
  * )
  */
 class UserPointsType extends ConfigEntityBundleBase implements UserPointsTypeInterface {
@@ -54,5 +59,12 @@ class UserPointsType extends ConfigEntityBundleBase implements UserPointsTypeInt
    * @var string
    */
   protected $label;
+
+  /**
+   * The User points type label.
+   *
+   * @var string
+   */
+  protected $initial_value;
 
 }

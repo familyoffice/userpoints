@@ -6,6 +6,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Routing\RouteBuilderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -38,6 +39,13 @@ class UserPointsSettingsForm extends ConfigFormBase {
   protected $entityTypeManager;
 
   /**
+   * The route builder service.
+   *
+   * @var \Drupal\Core\Routing\RouteBuilderInterface
+   */
+  protected $routeBuilder;
+
+  /**
    * Creates a new UserPointsSettingsForm.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
@@ -50,11 +58,13 @@ class UserPointsSettingsForm extends ConfigFormBase {
   public function __construct(
     ConfigFactoryInterface $configFactory,
     EntityTypeBundleInfoInterface $entityTypeBundleInfo,
-    EntityTypeManagerInterface $entityTypeManager
+    EntityTypeManagerInterface $entityTypeManager,
+    RouteBuilderInterface $route_builder
   ) {
     parent::__construct($configFactory);
     $this->bundleInfo = $entityTypeBundleInfo;
     $this->entityTypeManager = $entityTypeManager;
+    $this->routeBuilder = $route_builder;
   }
 
   /**
@@ -64,7 +74,8 @@ class UserPointsSettingsForm extends ConfigFormBase {
     return new static(
       $container->get('config.factory'),
       $container->get('entity_type.bundle.info'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('router.builder')
     );
   }
 
@@ -100,10 +111,17 @@ class UserPointsSettingsForm extends ConfigFormBase {
 
     $config = $this->config(static::CONFIG_NAME);
 
+    $form['description'] = [
+      '#markup' => $this->t('Select entity bundles that should be allowed to be assigned points to.'),
+    ];
     $form['userpoints_ui_bundles'] = ['#tree' => TRUE];
     $bundle_defaults = $config->get('userpoints_ui_bundles', []);
     foreach (static::SUPPORTED_ENTITY_TYPES as $entity_type_id) {
       $bundle_info = $this->bundleInfo->getBundleInfo($entity_type_id);
+      // We don't want a hard dependency on any entity type module.
+      if (count($bundle_info) === 0) {
+        continue;
+      }
 
       $definition = $this->entityTypeManager->getDefinition($entity_type_id);
       $form['userpoints_ui_bundles'][$entity_type_id] = [
@@ -147,7 +165,9 @@ class UserPointsSettingsForm extends ConfigFormBase {
 
     $config->save();
 
-    $this->messenger()->addStatus($this->t('Please rebuild caches in order for those settings to take effect.'));
+    // We need to rebuild routes as those depend on this config.
+    $this->routeBuilder->rebuild();
+
     parent::submitForm($form, $form_state);
   }
 

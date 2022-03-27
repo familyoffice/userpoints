@@ -28,7 +28,6 @@ class UserpointsTabAccess implements AccessInterface {
 
     $bundle_info = \Drupal::config('userpoints.settings')->get('userpoints_ui_bundles');
     if (!empty($bundle_info[$entity->getEntityTypeId()][$entity->bundle()])) {
-
       // Grant access if the current user has any permission defined by this module
       // except the administration permission that is for settings only.
       if ($account->hasPermission('manage all points') || $account->hasPermission('view all points')) {

@@ -105,22 +105,22 @@ abstract class UserpointsEntityTabForm extends FormBase {
       $output['view_access'][$bundle_name] = FALSE;
 
       // Check for edit access.
-      if ($this->currentUser->hasPermission('manage $bundle_name points') || $this->currentUser->hasPermission('manage all points')) {
+      if ($this->currentUser->hasPermission("manage $bundle_name points") || $this->currentUser->hasPermission('manage all points')) {
         $output['edit_access'][$bundle_name] = TRUE;
       }
 
       // Check for view access.
-      if ($this->currentUser->hasPermission('view $bundle_name points') || $this->currentUser->hasPermission('view all points')) {
+      if ($this->currentUser->hasPermission("view $bundle_name points") || $this->currentUser->hasPermission('view all points')) {
         $output['view_access'][$bundle_name] = TRUE;
       }
       else {
         if ($entity->getEntityTypeId() === 'user') {
-          if ($this->currentUser->id() === $entity->id() && $this->currentUser->hasPermission('view own $bundle_name points')) {
+          if ($this->currentUser->id() === $entity->id() && $this->currentUser->hasPermission("view own $bundle_name points")) {
             $output['view_access'][$bundle_name] = TRUE;
           }
         }
         elseif (method_exists($entity, 'getOwnerId')) {
-          if ($this->currentUser->id() === $entity->getOwnerId() && $this->currentUser->hasPermission('view own $bundle_name points')) {
+          if ($this->currentUser->id() === $entity->getOwnerId() && $this->currentUser->hasPermission("view own $bundle_name points")) {
             $output['view_access'][$bundle_name] = TRUE;
           }
         }
@@ -156,31 +156,32 @@ abstract class UserpointsEntityTabForm extends FormBase {
 
     $access_data = $this->getTypesAccess($entity);
 
+    $ajax_id = 'points-form-container-wrapper';
+    $form['points_form_container'] = [
+      '#type' => 'container',
+      '#attributes' => [
+        'id' => $ajax_id,
+      ],
+    ];
+
     if (count($access_data['type_options']) === 1) {
-      $keys = array_keys($access_data['type_options']);
-      $selected_type = $keys[1];
-      $form['points_form_container'] = [];
+      $selected_type = array_keys($access_data['type_options'])[0];
+      $form['type'] = [
+        '#type' => 'value',
+        '#value' => $selected_type,
+      ];
     }
     else {
-      $ajax_id = 'points-form-container-wrapper';
-
       $form['type'] = [
         '#type' => 'select',
         '#title' => $this->t('Points type'),
         '#options' => ['' => $this->t('-- Select points type --')] + $access_data['type_options'],
         '#ajax' => [
           'wrapper' => $ajax_id,
-          'callback' => [get_called_class(), 'ajaxForm'],
+          'callback' => [$this, 'ajaxForm'],
         ],
       ];
       $selected_type = $form_state->getValue('type', '');
-
-      $form['points_form_container'] = [
-        '#type' => 'container',
-        '#attributes' => [
-          'id' => $ajax_id,
-        ],
-      ];
     }
 
     if (!empty($selected_type)) {
@@ -209,7 +210,7 @@ abstract class UserpointsEntityTabForm extends FormBase {
           '#value' => $this->t('Add / subtract'),
           '#ajax' => [
             'wrapper' => $ajax_id,
-            'callback' => [get_called_class(), 'ajaxForm'],
+            'callback' => [$this, 'ajaxForm'],
           ],
         ];
       }
@@ -231,18 +232,18 @@ abstract class UserpointsEntityTabForm extends FormBase {
           // Create flat structure for convenience.
           foreach ([
             'quantity' => 'value',
-            'revision_log_message' => 'value',
-            'revision_user' => 'target_id',
-            'revision_created' => 'value',
+            'revision_log' => 'value',
+            'revision_uid' => 'target_id',
+            'revision_timestamp' => 'value',
           ] as $field_name => $column) {
             $item[$field_name] = $item[$field_name][0][$column];
           }
 
           $element['log']['#rows'][$vid] = [
             'quantity' => $item['quantity'],
-            'log' => $item['revision_log_message'],
-            'user' => $item['revision_user'],
-            'created' => $this->dateFormatter->format($item['revision_created'], 'short'),
+            'log' => $item['revision_log'],
+            'user' => $item['revision_uid'],
+            'created' => $this->dateFormatter->format($item['revision_timestamp'], 'short'),
           ];
         }
       }

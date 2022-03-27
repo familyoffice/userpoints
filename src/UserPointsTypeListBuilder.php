@@ -25,9 +25,9 @@ class UserPointsTypeListBuilder extends ConfigEntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     $row['label'] = $entity->label();
-    $row['initial_value'] = $entity->initial_value;
+    $row['initial_value'] = $entity->get('initial_value');
     $row['id'] = $entity->id();
-    // You probably want a few more properties here...
+
     return $row + parent::buildRow($entity);
   }
 
