@@ -10,7 +10,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 /**
  * Implements hook_help().
  */
-function userpoints_help($route_name, RouteMatchInterface $route_match): ?string {
+function userpoints_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
     // Help for the userpoints module.
     case 'help.page.userpoints':
