@@ -1,0 +1,18 @@
+{
+  "name": "drupal/userpoints",
+  "type": "drupal-module",
+  "description": "Allows to assign points to users.",
+  "keywords": [
+      "Drupal"
+  ],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/userpoints",
+  "minimum-stability": "dev",
+  "support": {
+      "issues": "https://www.drupal.org/project/issues/userpoints",
+      "source": "http://cgit.drupalcode.org/userpoints"
+  },
+  "require": {
+    "drupal/core": "^9 || ^10"
+  }
+}
