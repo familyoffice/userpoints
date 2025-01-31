@@ -1,5 +1,5 @@
 name: Userpoints
 description: Allows to assign points to users.
 type: module
-core_version_requirement: ^9
+core_version_requirement: ^9 | ^10
 configure: userpoints.admin
