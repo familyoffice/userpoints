@@ -8,7 +8,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 /**
  * Defines the User Points service.
  */
-class UserPointsEvent  implements Event {
+class UserPointsEvent extends Event {
 
   public UserPointsInterface $points;
   public int $quantity;
