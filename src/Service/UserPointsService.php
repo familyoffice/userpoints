@@ -10,7 +10,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\userpoints\Entity\UserPointsInterface;
 use Drupal\userpoints\Exception\UserPointsException;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Defines the User Points service.
