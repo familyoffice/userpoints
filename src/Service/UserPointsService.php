@@ -163,7 +163,7 @@ class UserPointsService implements UserPointsServiceInterface {
     $event->points = $points;
     $event->quantity = &$quantity;
     $event->log = &$log;
-    $this->eventDispatcher->dispatch('userpoints.add', $event);
+    $this->eventDispatcher->dispatch($event, 'userpoints.add');
 
     if ($quantity) {
       $points->addPoints($quantity);
@@ -210,7 +210,7 @@ class UserPointsService implements UserPointsServiceInterface {
     $event->targetPoints = $target_points;
     $event->quantity = &$quantity;
     $event->log = &$log;
-    $this->eventDispatcher->dispatch('userpoints.transfer', $event);
+    $this->eventDispatcher->dispatch($event, 'userpoints.transfer'); // updated for new requirements
 
     $target_points->addPoints($quantity);
     $target_points->setRevisionLogMessage($log);
