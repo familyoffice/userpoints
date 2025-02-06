@@ -11,6 +11,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\userpoints\Entity\UserPointsInterface;
 use Drupal\userpoints\Exception\UserPointsException;
 use Symfony\Contracts\EventDispatcher\Event;
+use Drupal\userpoints\Event\UserPointsEvent;
 
 /**
  * Defines the User Points service.
@@ -159,7 +160,7 @@ class UserPointsService implements UserPointsServiceInterface {
     $points->setNewRevision();
 
     // Allow other modules to interact.
-    $event = new Event();
+    $event = new UserPointsEvent();
     $event->points = $points;
     $event->quantity = &$quantity;
     $event->log = &$log;
@@ -205,7 +206,7 @@ class UserPointsService implements UserPointsServiceInterface {
     $source_points->setNewRevision();
 
     // Allow other modules to interact.
-    $event = new Event();
+    $event = new UserPointsEvent();
     $event->sourcePoints = $source_points;
     $event->targetPoints = $target_points;
     $event->quantity = &$quantity;
